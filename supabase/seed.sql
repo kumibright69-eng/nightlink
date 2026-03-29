@@ -1,0 +1,2 @@
+-- Optional sample moderation roles:
+-- update profiles set role = 'admin' where username = 'founder';

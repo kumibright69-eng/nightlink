@@ -1,0 +1,58 @@
+export default function StaysPage() {
+  const hotels = [
+    { name: "Accra City Hotel", price: 150 },
+    { name: "Kempinski Gold Coast", price: 220 },
+    { name: "Labadi Beach Hotel", price: 180 }
+  ];
+
+  return (
+    <main style={{ padding: "40px", fontFamily: "Arial" }}>
+      <h1 style={{ fontSize: "28px", fontWeight: "bold" }}>
+        Nearby Stays
+      </h1>
+
+      <div style={{ marginTop: "20px", display: "grid", gap: "20px" }}>
+        {hotels.map((hotel) => {
+          const fee = (hotel.price * 0.035).toFixed(2);
+          const total = (hotel.price + Number(fee)).toFixed(2);
+
+          return (
+            <div
+              key={hotel.name}
+              style={{
+                border: "1px solid #ccc",
+                padding: "20px",
+                borderRadius: "10px"
+              }}
+            >
+              <h2 style={{ fontSize: "20px", fontWeight: "bold" }}>
+                {hotel.name}
+              </h2>
+
+              <p>Hotel Price: ${hotel.price}</p>
+              <p>Service Fee (3.5%): ${fee}</p>
+
+              <p style={{ fontWeight: "bold" }}>
+                Total: ${total}
+              </p>
+
+              <button
+                style={{
+                  marginTop: "10px",
+                  padding: "10px 15px",
+                  background: "black",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer"
+                }}
+              >
+                Book Now
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </main>
+  );
+}
