@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 import { otpSchema } from "@/lib/validators";
 
 export default function SignUpPage() {
-  const supabase = createClient();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +23,7 @@ export default function SignUpPage() {
     }
 
     setLoading(true);
+    const supabase = createClient();
 
     const { error } = await supabase.auth.signInWithOtp({
       email,

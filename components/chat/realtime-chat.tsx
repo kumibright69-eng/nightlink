@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type Message = {
@@ -18,13 +18,13 @@ type Props = {
 };
 
 export function RealtimeChat({ matchId, userId, initialMessages }: Props) {
-  const supabase = useMemo(() => createClient(), []);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    const supabase = createClient();
     const channel = supabase
       .channel(`messages:${matchId}`)
       .on(
@@ -40,7 +40,7 @@ export function RealtimeChat({ matchId, userId, initialMessages }: Props) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [matchId, supabase]);
+  }, [matchId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,6 +51,7 @@ export function RealtimeChat({ matchId, userId, initialMessages }: Props) {
     const value = content.trim();
     if (!value) return;
     setSending(true);
+    const supabase = createClient();
     const { error } = await supabase.from("messages").insert({ match_id: matchId, sender_id: userId, content: value });
     setSending(false);
     if (!error) setContent("");

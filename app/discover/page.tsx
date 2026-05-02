@@ -1,10 +1,13 @@
-import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
 import { ReportForm } from "@/components/shared/report-form";
 import { BlockButton } from "@/components/shared/block-button";
 
+const DISCOVERY_SUPPRESSION_DAYS = 30;
+const DISCOVERY_LIMIT = 24;
+
 export default async function DiscoverPage() {
   const { supabase, user, profile } = await requireProfile();
+  const suppressionCutoff = new Date(Date.now() - DISCOVERY_SUPPRESSION_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
   const { data: blocks } = await supabase
     .from("blocks")
@@ -17,15 +20,37 @@ export default async function DiscoverPage() {
     blockedIds.add(b.blocker_id);
   });
 
+  const { data: recentLikes } = await supabase
+    .from("likes")
+    .select("receiver_id")
+    .eq("sender_id", user.id)
+    .gte("created_at", suppressionCutoff);
+
+  const { data: recentMatches } = await supabase
+    .from("matches")
+    .select("user_one, user_two")
+    .or(`user_one.eq.${user.id},user_two.eq.${user.id}`)
+    .gte("created_at", suppressionCutoff);
+
+  const unavailableIds = new Set<string>(blockedIds);
+  (recentLikes || []).forEach((like: any) => {
+    unavailableIds.add(like.receiver_id);
+  });
+  (recentMatches || []).forEach((match: any) => {
+    unavailableIds.add(match.user_one === user.id ? match.user_two : match.user_one);
+  });
+
   const { data: members } = await supabase
     .from("profiles")
     .select("id, username, age, city, country, bio, is_verified, is_private, avatar_url")
     .neq("id", user.id)
     .eq("is_active", true)
     .eq("city", profile.city)
-    .limit(24);
+    .order("created_at", { ascending: false });
 
-  const visibleMembers = (members || []).filter((member: any) => !blockedIds.has(member.id));
+  const visibleMembers = (members || [])
+    .filter((member: any) => !unavailableIds.has(member.id))
+    .slice(0, DISCOVERY_LIMIT);
 
   return (
     <main className="container-page">

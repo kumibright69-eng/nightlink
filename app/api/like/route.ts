@@ -11,7 +11,11 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.redirect(new URL("/login", request.url));
   if (!receiver_id) return NextResponse.redirect(new URL("/discover", request.url));
 
-  await supabase.from("likes").upsert({ sender_id: user.id, receiver_id });
+  await supabase.from("likes").upsert({
+    sender_id: user.id,
+    receiver_id,
+    created_at: new Date().toISOString()
+  });
 
   const { data: reverseLike } = await supabase
     .from("likes")

@@ -16,11 +16,10 @@ export default async function AdminPage() {
     .order("created_at", { ascending: false })
     .limit(30);
 
-  const { data: flaggedUsers } = await supabase
+  const { data: members } = await supabase
     .from("profiles")
-    .select("id, username, is_active, is_verified, role")
-    .order("created_at", { ascending: false })
-    .limit(30);
+    .select("id, username, is_active, is_verified, role, city, country, created_at")
+    .order("created_at", { ascending: false });
 
   return (
     <main className="container-page">
@@ -72,11 +71,15 @@ export default async function AdminPage() {
       </div>
 
       <section className="card mt-6 p-6">
-        <h2 className="mb-4 text-xl font-semibold">User moderation</h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-xl font-semibold">All members</h2>
+          <span className="badge">{members?.length || 0} total</span>
+        </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {flaggedUsers?.map((member: any) => (
+          {members?.map((member: any) => (
             <div key={member.id} className="rounded-xl bg-slate-50 p-4">
               <div className="font-medium">{member.username}</div>
+              <div className="mt-1 text-sm text-slate-500">{[member.city, member.country].filter(Boolean).join(", ") || "Location not set"}</div>
               <div className="mt-1 text-sm text-slate-500">Role: {member.role}</div>
               <div className="mt-1 text-sm text-slate-500">Status: {member.is_active ? "active" : "suspended"}</div>
               <div className="mt-3 flex gap-2">
