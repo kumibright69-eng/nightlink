@@ -9,7 +9,6 @@ type Props = {
 };
 
 export function PhotoUpload({ userId, currentUrl }: Props) {
-  const supabase = createClient();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [preview, setPreview] = useState<string | null>(currentUrl);
   const [message, setMessage] = useState<string | null>(null);
@@ -21,6 +20,7 @@ export function PhotoUpload({ userId, currentUrl }: Props) {
 
     const ext = file.name.split(".").pop() || "jpg";
     const path = `${userId}/avatar-${Date.now()}.${ext}`;
+    const supabase = createClient();
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
