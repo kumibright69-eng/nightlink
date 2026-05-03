@@ -1,15 +1,28 @@
-import { redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
 import { ReportForm } from "@/components/shared/report-form";
 import { BlockButton } from "@/components/shared/block-button";
 
+function MembersLoadError() {
+  return (
+    <main className="container-page">
+      <div className="card p-5 text-slate-700">
+        Members could not be loaded. Check the Supabase configuration and database permissions, then try again.
+      </div>
+    </main>
+  );
+}
+
 export default async function DiscoverPage() {
   const { supabase, user, profile } = await requireProfile();
 
-  const { data: blocks } = await supabase
+  const { data: blocks, error: blocksError } = await supabase
     .from("blocks")
     .select("blocked_user_id, blocker_id")
     .or(`blocker_id.eq.${user.id},blocked_user_id.eq.${user.id}`);
+
+  if (blocksError) {
+    return <MembersLoadError />;
+  }
 
   const blockedIds = new Set<string>();
   (blocks || []).forEach((b: any) => {
@@ -17,13 +30,17 @@ export default async function DiscoverPage() {
     blockedIds.add(b.blocker_id);
   });
 
-  const { data: members } = await supabase
+  const { data: members, error: membersError } = await supabase
     .from("profiles")
     .select("id, username, age, city, country, bio, is_verified, is_private, avatar_url")
     .neq("id", user.id)
     .eq("is_active", true)
     .eq("city", profile.city)
     .limit(24);
+
+  if (membersError) {
+    return <MembersLoadError />;
+  }
 
   const visibleMembers = (members || []).filter((member: any) => !blockedIds.has(member.id));
 
