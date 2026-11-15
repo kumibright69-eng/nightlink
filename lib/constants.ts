@@ -1,23 +1,54 @@
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "NightLink";
-
-export const CITIES = ["Lagos", "Abuja", "Accra", "Kumasi", "Abidjan"] as const;
+export const APP_NAME = "Akoma";
+export const CITIES = [
+  "Accra",
+  "Kumasi",
+  "Tema",
+  "Takoradi",
+  "Cape Coast",
+  "Tamale",
+  "Sunyani",
+  "Koforidua",
+  "Ho",
+  "Wa",
+  "Bolgatanga",
+  "Techiman",
+] as const;
 export type City = (typeof CITIES)[number];
-
-export const COUNTRY_BY_CITY: Record<City, string> = {
-  Lagos: "Nigeria",
-  Abuja: "Nigeria",
-  Accra: "Ghana",
-  Kumasi: "Ghana",
-  Abidjan: "Côte d’Ivoire"
-};
-
+export const GENDERS = ["Woman", "Man", "Non-binary"] as const;
+export const INTENTIONS = [
+  "A long-term relationship",
+  "Marriage",
+  "Dating and seeing where it goes",
+] as const;
+export const INTERESTS = [
+  "Highlife & Afrobeats",
+  "Food adventures",
+  "Travel",
+  "Beach days",
+  "Faith",
+  "Fitness",
+  "Movies",
+  "Art & culture",
+  "Reading",
+  "Dancing",
+  "Football",
+  "Entrepreneurship",
+  "Cooking",
+  "Nature",
+  "Live music",
+  "Gaming",
+] as const;
 export const REPORT_REASONS = [
-  "Spam or fake profile",
+  "Fake profile or scam",
   "Harassment",
   "Underage concern",
-  "Scam attempt",
-  "Explicit or abusive content",
-  "Other"
+  "Inappropriate content",
+  "Other safety concern",
 ] as const;
-
-export const ADMIN_ROLES = ["admin", "moderator"] as const;
+export const MEMBERSHIP = {
+  price: 50,
+  months: 1,
+  days: 30,
+  phone: "0546501820",
+  label: "Akoma Plus",
+} as const;
