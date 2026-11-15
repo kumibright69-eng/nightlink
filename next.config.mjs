@@ -1,10 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "5mb"
-    }
-  }
+  serverExternalPackages: ["@netlify/database"],
 };
-
 export default nextConfig;

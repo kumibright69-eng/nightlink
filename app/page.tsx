@@ -1,210 +1,313 @@
 import Link from "next/link";
-import Image from "next/image";
-import { CheckCircle2, Lock, MapPin, MessageCircle, ShieldCheck, Sparkles, Star } from "lucide-react";
-
-const features = [
-  {
-    icon: ShieldCheck,
-    title: "Safety-first by design",
-    text: "Verified profiles, reporting tools, moderation review, and privacy controls from day one."
-  },
-  {
-    icon: Lock,
-    title: "Discreet and private",
-    text: "Private mode, selective visibility, and profile control built for confidence and comfort."
-  },
-  {
-    icon: MapPin,
-    title: "Built for local discovery",
-    text: "Meet people in launch cities like Lagos, Accra, Abuja, and beyond."
-  }
-];
-
-const steps = [
-  "Create your account",
-  "Complete your private profile",
-  "Discover people nearby",
-  "Match and chat in real time"
-];
-
+import { MEMBERSHIP } from "@/lib/constants";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Heart,
+  MapPin,
+  ShieldCheck,
+  MessageCircle,
+  Sparkles,
+  MoveUpRight,
+  Check,
+  LockKeyhole,
+} from "lucide-react";
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <section className="relative overflow-hidden border-b border-white/10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.22),_transparent_36%),radial-gradient(circle_at_right,_rgba(59,130,246,0.18),_transparent_28%)]" />
-        <div className="relative mx-auto grid max-w-7xl gap-14 px-6 py-20 lg:grid-cols-2 lg:items-center">
-          <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-white/5 px-4 py-2 text-sm text-slate-200">
-              <Sparkles className="h-4 w-4 text-violet-300" />
-              Private connections, on your terms.
-            </div>
-
-            <h1 className="max-w-2xl text-5xl font-semibold leading-tight tracking-tight text-white md:text-6xl">
-              Meet discreetly, connect confidently, and own the night.
-            </h1>
-
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
-              NightLink is a premium privacy-first platform for adults seeking honest,
-              modern connections with strong safety tools and a refined experience.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/signup"
-                className="rounded-2xl bg-gradient-to-r from-violet-500 to-blue-500 px-6 py-3 text-sm font-medium text-white shadow-xl shadow-violet-950/40"
-              >
-                Create account
-              </Link>
-              <Link
-                href="/login"
-                className="rounded-2xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-medium text-white"
-              >
-                Log in
-              </Link>
-            </div>
-
-            <div className="mt-10 grid gap-3 sm:grid-cols-2">
-              {steps.map((step, index) => (
-                <div key={step} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-violet-500 to-blue-500 text-sm font-semibold">
-                    {index + 1}
-                  </div>
-                  <span className="text-sm text-slate-200">{step}</span>
-                </div>
-              ))}
+    <main>
+      <section className="hero-section">
+        <div className="hero-copy">
+          <div className="hero-kicker">
+            <span className="tiny-star">✳</span> ROOTED IN GHANA. MADE FOR
+            CONNECTION.
+          </div>
+          <h1>
+            Your person.
+            <br />
+            Your kind of <span className="handwritten">spark.</span>
+          </h1>
+          <p className="hero-description">
+            From a first “ɛte sɛn?” to something that feels like home. Meet
+            people who get your world, share your values, and are ready for
+            something real.
+          </p>
+          <div className="hero-cta">
+            <Link href="/signup" className="button primary large-button">
+              Find your person <ArrowUpRight size={20} />
+            </Link>
+            <span>
+              Free to join.
+              <br />
+              <strong>Something real to find.</strong>
+            </span>
+          </div>
+          <div className="hero-promise">
+            <ShieldCheck size={18} />
+            <span>Thoughtful connections. Your comfort comes first.</span>
+          </div>
+          <div className="hero-location">
+            <span className="ghana-bars">
+              <i />
+              <i />
+              <i />
+            </span>
+            <span>Accra · Kumasi · Tema · And a little closer to you</span>
+          </div>
+        </div>
+        <div className="hero-art">
+          <div className="orbit orbit-one" />
+          <div className="orbit orbit-two" />
+          <span className="art-word">
+            akoma <small>/ heart /</small>
+          </span>
+          <div className="portrait portrait-back">
+            <img
+              src="/images/chapter.jpg"
+              alt="Portrait celebrating new beginnings"
+            />
+            <div className="portrait-caption">
+              <span>Be a little brave.</span>
+              <ArrowUpRight size={21} />
             </div>
           </div>
-
-          <div className="relative">
-            <div className="absolute -left-8 top-10 hidden rounded-2xl border border-white/10 bg-slate-900/80 p-4 shadow-2xl lg:block">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-emerald-500/20 p-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-400" />
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-white">Verified members</div>
-                  <div className="text-xs text-slate-400">Higher trust, better matches</div>
-                </div>
-              </div>
+          <div className="portrait portrait-front">
+            <img
+              src="/images/connection.jpg"
+              alt="Portrait celebrating Ghanaian style and individuality"
+            />
+            <div className="portrait-caption">
+              <span>Be entirely you.</span>
+              <Heart size={21} />
             </div>
-
-            <div className="absolute -right-4 bottom-12 hidden rounded-2xl border border-white/10 bg-slate-900/80 p-4 shadow-2xl lg:block">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-violet-500/20 p-2">
-                  <MessageCircle className="h-5 w-5 text-violet-300" />
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-white">Realtime chat</div>
-                  <div className="text-xs text-slate-400">Instant private conversations</div>
-                </div>
-              </div>
+          </div>
+          <div className="floating-heart">
+            <Heart size={34} fill="currentColor" strokeWidth={1.3} />
+            <span>
+              It starts with
+              <br />a little heart.
+            </span>
+          </div>
+          <div className="connection-note">
+            <span className="note-icon">
+              <Sparkles size={20} />
+            </span>
+            <div>
+              A familiar feeling.<small>A brand-new possibility.</small>
             </div>
-
-            <div className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/40 backdrop-blur">
-              <div className="mb-5 flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <Image
-                    src="/brand/nightlink-logo.png"
-                    alt="NightLink"
-                    width={44}
-                    height={44}
-                    className="h-11 w-11 rounded-2xl"
-                  />
-                  <div>
-                    <div className="font-semibold text-white">NightLink</div>
-                    <div className="text-sm text-slate-400">Private connections, on your terms.</div>
-                  </div>
-                </div>
-                <div className="rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-xs text-violet-200">
-                  Premium feel
-                </div>
-              </div>
-
-              <div className="grid gap-4">
-                <div className="rounded-3xl bg-gradient-to-br from-violet-500/20 to-blue-500/20 p-5">
-                  <div className="text-sm text-slate-300">Featured profile experience</div>
-                  <div className="mt-3 rounded-2xl border border-white/10 bg-slate-950/70 p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-lg font-semibold">Ama, 26</div>
-                        <div className="text-sm text-slate-400">Accra, Ghana</div>
-                      </div>
-                      <div className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">
-                        Verified
-                      </div>
-                    </div>
-                    <p className="mt-4 text-sm leading-6 text-slate-300">
-                      Discreet, direct, and respectful. Looking for chemistry, clear intent, and easy conversation.
-                    </p>
-                    <div className="mt-4 flex gap-2">
-                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200">Private mode</span>
-                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200">Fast replies</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
-                    <div className="mb-2 flex items-center gap-2 text-sm font-medium text-white">
-                      <ShieldCheck className="h-4 w-4 text-violet-300" />
-                      Safer matching
-                    </div>
-                    <p className="text-sm leading-6 text-slate-400">
-                      Report, block, verify, and manage privacy without friction.
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-white/10 bg-slate-900/70 p-4">
-                    <div className="mb-2 flex items-center gap-2 text-sm font-medium text-white">
-                      <Star className="h-4 w-4 text-blue-300" />
-                      Premium access
-                    </div>
-                    <p className="text-sm leading-6 text-slate-400">
-                      Get 2 months free, then continue with a premium quarterly plan.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          </div>
+          <div className="art-footnote">
+            A place for your next chapter. <MoveUpRight size={15} />
           </div>
         </div>
       </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-20">
-        <div className="mb-12 max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-violet-300">Why NightLink</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white md:text-4xl">
-            Designed to feel premium, private, and trustworthy from the first click.
+      <section className="values-strip" aria-label="Our values">
+        <span>
+          <Heart size={18} /> Real intentions
+        </span>
+        <i />
+        <span>
+          <MapPin size={18} /> Ghana, at heart
+        </span>
+        <i />
+        <span>
+          <ShieldCheck size={18} /> Your boundaries, respected
+        </span>
+        <i />
+        <span>
+          <MessageCircle size={18} /> A mutual spark first
+        </span>
+      </section>
+      <section id="how-it-works" className="how-section">
+        <div className="section-intro">
+          <span className="eyebrow">LESS SCROLLING. MORE FEELING.</span>
+          <h2>
+            A good thing can
+            <br />
+            start <em>simply.</em>
           </h2>
+          <p>
+            No perfect lines needed. Just you, a little curiosity, and someone
+            worth getting to know.
+          </p>
+          <Link className="text-link arrow-link" href="/signup">
+            Let’s begin <ArrowRight size={17} />
+          </Link>
         </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {features.map((feature) => (
-            <div key={feature.title} className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-              <feature.icon className="mb-4 h-6 w-6 text-violet-300" />
-              <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-slate-400">{feature.text}</p>
+        <div className="steps-list">
+          {[
+            {
+              n: "01",
+              icon: UserIcon,
+              title: "Show up as yourself.",
+              text: "Your interests, your city, your hopes for what’s next. Build a profile that feels like you.",
+            },
+            {
+              n: "02",
+              icon: Heart,
+              title: "Find a little common ground.",
+              text: "Discover people across Ghana. Like someone who catches your eye. When the feeling’s mutual, it’s a match.",
+            },
+            {
+              n: "03",
+              icon: MessageCircle,
+              title: "Let the conversation happen.",
+              text: "Take your time, share a laugh, and get to know your match. Akoma Plus opens the door to messaging.",
+            },
+          ].map((step) => (
+            <div className="step" key={step.n}>
+              <span className="step-number">{step.n}</span>
+              <div>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </div>
+              <step.icon size={25} strokeWidth={1.4} />
             </div>
           ))}
         </div>
       </section>
-
-      <section className="border-t border-white/10 bg-slate-900/60">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 px-6 py-16 md:flex-row md:items-center">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-violet-300">Launch offer</p>
-            <h3 className="mt-3 text-3xl font-semibold tracking-tight text-white">Start free for 2 months.</h3>
-            <p className="mt-3 max-w-2xl text-slate-400">
-              Then continue with premium access at USD 13.99 every 3 months, shown to users as approximately GHS 150.
-            </p>
+      <section className="intention-section">
+        <div className="intention-art">
+          <span className="big-heart">
+            <Heart strokeWidth={0.75} />
+          </span>
+          <p>
+            Not just a match.
+            <br />
+            <em>A meeting of hearts.</em>
+          </p>
+          <span className="art-label">THE MEANING OF AKOMA</span>
+        </div>
+        <div className="intention-copy">
+          <span className="eyebrow">A NAME WITH A LITTLE MEANING</span>
+          <h2>
+            Heart is where
+            <br />
+            it all begins.
+          </h2>
+          <p>
+            Akoma means “heart” in Akan. It’s a reminder to bring patience,
+            understanding, and a little openness to finding your person.
+          </p>
+          <p>
+            Whether you’re a beach-at-Labadi person or a quiet-Sunday-in-Kumasi
+            person, there’s room for your kind of love here.
+          </p>
+          <div className="city-tags">
+            {[
+              "Accra",
+              "Kumasi",
+              "Cape Coast",
+              "Takoradi",
+              "Tamale",
+              "Tema",
+            ].map((city) => (
+              <span key={city}>
+                <MapPin size={12} />
+                {city}
+              </span>
+            ))}
           </div>
-          <Link
-            href="/signup"
-            className="rounded-2xl bg-gradient-to-r from-violet-500 to-blue-500 px-6 py-3 font-medium text-white shadow-lg shadow-violet-950/30"
-          >
-            Join NightLink
-          </Link>
         </div>
       </section>
+      <section className="safety-section">
+        <div>
+          <span className="eyebrow">GOOD CONNECTIONS NEED GOOD BOUNDARIES</span>
+          <h2>
+            Open your heart.
+            <br />
+            Keep your peace.
+          </h2>
+        </div>
+        <div>
+          <p>
+            You decide who you connect with. Private conversations begin with a
+            mutual match. Block, report, or pause your profile whenever you need
+            to.
+          </p>
+          <div className="safety-points">
+            <span>
+              <Check size={16} /> Members aged 18 and over
+            </span>
+            <span>
+              <Check size={16} /> Your full birthday stays private
+            </span>
+            <span>
+              <Check size={16} /> Safety reports reviewed by administrators
+            </span>
+          </div>
+          <Link className="text-link arrow-link" href="/safety">
+            Our community promise <ArrowUpRight size={17} />
+          </Link>
+        </div>
+        <ShieldCheck className="safety-watermark" />
+      </section>
+      <section className="plus-preview">
+        <div>
+          <span className="eyebrow">A LITTLE MORE ROOM TO CONNECT</span>
+          <h2>
+            Make the first
+            <br />
+            conversation count.
+          </h2>
+          <p>
+            Profiles, discovery, and matching are free. With Akoma Plus, send
+            messages to your matches for GHS {MEMBERSHIP.price} for{" "}
+            {MEMBERSHIP.days} days. Pay with MoMo. No automatic renewals.
+          </p>
+          <Link href="/billing" className="button dark">
+            Meet Akoma Plus <ArrowUpRight size={17} />
+          </Link>
+        </div>
+        <div className="plus-ticket">
+          <span className="ticket-top">
+            <Heart size={21} /> akoma plus
+          </span>
+          <div>
+            <small>YOUR NEXT CHAPTER</small>
+            <p>
+              A little spark.
+              <br />
+              <em>More possibilities.</em>
+            </p>
+          </div>
+          <div className="ticket-bottom">
+            <span>
+              GHS <strong>{MEMBERSHIP.price}</strong>{" "}
+              <small>/ month ({MEMBERSHIP.days} days)</small>
+            </span>
+            <LockKeyhole size={19} />
+          </div>
+        </div>
+      </section>
+      <section className="last-cta">
+        <span className="eyebrow">SOMEONE WORTH A HELLO.</span>
+        <h2>
+          Maybe your next chapter
+          <br />
+          starts <em>right here.</em>
+        </h2>
+        <Link href="/signup" className="button primary large-button">
+          Find your person <ArrowUpRight size={19} />
+        </Link>
+        <span className="small muted">
+          For Ghanaians. For real connection. For you.
+        </span>
+      </section>
     </main>
+  );
+}
+function UserIcon(props: { size?: number; strokeWidth?: number }) {
+  return (
+    <svg
+      width={props.size || 24}
+      height={props.size || 24}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={props.strokeWidth || 1.5}
+    >
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 22v-2a8 8 0 0 1 16 0v2" />
+    </svg>
   );
 }

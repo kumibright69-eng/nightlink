@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+.netlify/*
+!.netlify/features/
+!.netlify/results.md
+coverage/
+playwright-report/
+test-results/

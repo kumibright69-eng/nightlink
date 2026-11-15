@@ -1,122 +1,44 @@
-# NightLink
+# Akoma
 
-A Next.js + Supabase MVP for a privacy-first dating site focused on West African cities.
+Akoma is a Ghana-focused, adults-only dating application built with Next.js, Netlify Identity, Netlify Database with Drizzle, and Netlify Blobs. It replaced the former NightLink implementation and no longer reads Supabase or PayPal configuration. This is a fresh Netlify-backed community; existing Supabase accounts and records were not imported.
 
-## What's included
+Members can create an email/password account, confirm their email, recover a password, upload a profile photo, set their relationship preferences, and discover compatible people across Ghana. Reciprocal likes create a match. Conversations refresh every five seconds while the tab is visible. Only mutual matches can read a conversation; sending requires the sender’s active Plus membership. The app includes blocking, reporting, pausing discovery, removing a dating profile, support requests, and administrator moderation.
 
-- passwordless email OTP / magic link auth
-- onboarding and private-mode profile setup
-- profile photo upload through Supabase Storage
-- city-based discovery
-- like-to-match flow
-- realtime chat with Supabase Realtime
-- block and report UI
-- moderator/admin dashboard
-- moderation workflow for reports, verification, and suspension
-- admin role protection
+## Membership and Mobile Money
 
-## Brand assets
+The configured offer is **GHS 50 monthly (30 days)**. Membership does not renew automatically. Free members can create profiles, discover people, like, match, and read existing conversations. Each person needs an active membership to send messages.
 
-Place your generated logo files in:
+The recipient is **0546501820**. Payments use the requested **manual verification** flow; the app does not initiate or automatically verify MoMo transfers. Members send the money, then submit the sending account name, sending number, and transaction ID. Administrators must compare these against the receiving wallet before approval. A transaction ID cannot be used for multiple purchases or different members, and each member can have only one pending submission. A member can correct and resubmit their own rejected claim using the same transaction ID; an approved transfer cannot be reused. Approval is transactional and adds the purchased duration once, extending an active membership when applicable. Review notes appear in the member’s payment history. Rejections do not unlock messaging.
 
-```txt
-public/brand/nightlink-logo.png
-public/brand/nightlink-icon.png
-```
+The price, recipient, and duration are defined in `lib/constants.ts`. The price is stored on each payment request, so later changes do not silently change pending purchases.
 
-The package already includes both files.
+## Initial administrator
 
-## Setup
+Identity activation is included. The first administrator must be assigned through the Netlify dashboard; users cannot grant themselves a role through signup or profile fields.
 
-1. Create a Supabase project.
-2. Copy `.env.example` to `.env.local` and fill in your values.
-3. In Supabase SQL editor, run `supabase/schema.sql`.
-4. Create a public Storage bucket named `avatars`.
-5. Run `supabase/storage-policies.sql`.
-6. In Supabase Realtime, enable replication for the `messages` table.
-7. Install dependencies:
+1. Open this project’s **Identity** area in the Netlify dashboard.
+2. Invite the owner’s email, or open their existing Identity user after they register and confirm their email.
+3. After the invitation is accepted, open that user and add **admin** in the **Roles** field.
+4. Log in to Akoma and complete the dating profile, then open `/admin`.
 
-```bash
-npm install
-```
+The administrator dashboard verifies payments, resolves support requests and safety reports, suspends profiles, and restores suspended members. Suspending a profile prevents discovery and message access. Suspended members retain access to account support and profile removal. Keep at least one administrator available to process manual payments. Never approve a payment based only on the submitted transaction ID.
 
-8. Start the app:
+## Hosting and data
 
-```bash
-npm run dev
-```
+Server routes live in `app/api/community/[...path]/route.ts`. They validate the sign-in cookie against Identity on every request and check administrator roles using server-controlled app metadata. Mutations require a same-origin request. Birthday and discovery inputs are validated, private profile fields are removed from discovery responses, images require authentication, and blocks work in both directions. Rate limits are stored in Postgres and persist across instances.
 
-## Important production notes
+The database schema is in `db/schema.ts`. The initial generated migration is in `netlify/database/migrations/`. Netlify provisions the database and applies migrations during deployment. Do not run schema changes manually. Database connections are created only when a route needs them.
 
-### 1) Promote an admin user
-After the first user signs up and finishes onboarding, run this SQL manually to make that user an admin:
+Profile images are stored in the `akoma-photos` Netlify Blobs store. They are served through an authenticated route with private, noncached responses. Uploads are limited to 3 MB and checked for JPG, PNG, or WebP signatures. Paused profiles remain visible to existing matches; blocked or suspended profiles do not.
 
-```sql
-update profiles
-set role = 'admin'
-where username = 'YOUR_USERNAME';
-```
+Removing a dating profile cascades to matches, messages, likes, and blocks. Sign-in accounts remain registered. Payment and safety records are retained with detached profile references for manual review. Photo cleanup is attempted during removal; uploaded files cannot be accessed through the application after the profile is gone. Members can submit privacy or account removal requests before deleting their dating profile.
 
-### 2) Email OTP
-This project uses `supabase.auth.signInWithOtp()`. Configure your email templates and auth redirect URLs in Supabase Authentication settings.
+No fictional member records are seeded. Empty discovery and match screens are expected until real adults join. Promotional portraits are decorative, not member listings. Photography: Unsplash photo `1531123897727-8f129e1688ce` and Pexels photo `1681010`. The interface uses DM Sans and Playfair Display from Google Fonts, with serif and sans-serif fallbacks.
 
-### 3) Moderation workflow
-- users can submit reports
-- moderators/admins can mark reports reviewing/resolved/dismissed
-- moderators/admins can suspend or restore users
-- moderators/admins can approve or reject verification requests
+## Development and checks
 
-### 4) Realtime chat
-Enable Realtime for `public.messages` in Supabase so messages appear instantly.
+Install dependencies with `npm install`. Start the development environment with `netlify dev --port 8889`. Identity is a hosted service and does not run in the local Netlify development emulator; confirmation emails, genuine authenticated database flows, and wallet verification require a deployed site and real test accounts.
 
-### 5) Storage
-Create the `avatars` bucket and apply the storage policies file, or uploads will fail.
+`npm run typecheck` checks TypeScript, `npm run lint` checks the source, and `npm test` covers age boundaries, profile consent and validation, private field filtering, membership expiry, and MoMo submission validation. With the development server on port 8889, `npm run test:e2e` runs desktop and mobile public-interface and API access-control tests, plus isolated browser fixtures for mutual matching, message sending, payment submission, blocking, and administrator approval. These fixtures do not replace deployed authentication or database integration tests. Install the Playwright Chromium browser with `npx playwright install chromium` if needed.
 
-## Suggested next upgrades before launch
-
-- stronger onboarding validation
-- phone OTP in addition to email OTP
-- verification upload UI
-- age, verified, and city filters
-- rate limits and anti-spam protections
-- audit logging for moderation actions
-- legal pages, consent policy, and terms
-
-## PayPal billing now included
-
-This package includes a PayPal subscription flow set up for:
-- 2 months free trial
-- then USD 13.99 every 3 months (displayed as about GHS 150 in the UI)
-- merchant account reference: Rusty3994@gmail.com
-
-### Very important
-The code references `Rusty3994@gmail.com`, but the money only settles to that account if your live `PAYPAL_CLIENT_ID` and `PAYPAL_SECRET` belong to the PayPal Business account that receives funds for that email.
-
-### PayPal launch steps
-1. Create or use a PayPal Business account for `Rusty3994@gmail.com`.
-2. Create a live PayPal app and copy the client ID and secret into `.env.local`.
-3. Add `SUPABASE_SERVICE_ROLE_KEY` to `.env.local` so webhook sync can update billing records.
-4. Run the full `supabase/schema.sql` again, or execute only the billing section at the bottom.
-5. Call `POST /api/paypal/bootstrap-plan` once in your live environment.
-6. Copy the returned `plan_id` into `.env.local` as `NEXT_PUBLIC_PAYPAL_PLAN_ID`.
-7. In PayPal, configure your webhook URL to `/api/paypal/webhook` and place the webhook ID into `.env.local`.
-8. Visit `/billing` after login to subscribe.
-
-### What is included
-- `/billing` page
-- PayPal subscribe button
-- plan bootstrap route
-- local sync route after approval
-- webhook verification route
-- `subscriptions` and `payment_events` tables
-
-
-### Dual currency display
-Set these in `.env.local` if you want to control how pricing appears on the billing page:
-
-```env
-NEXT_PUBLIC_PAYPAL_PRICE_USD=13.99
-NEXT_PUBLIC_GHS_REFERENCE_AMOUNT=150
-```
-
-The PayPal charge is processed in USD, while the page also shows the Ghana cedi reference amount for clarity.
+Deploy-time validation and migrations are handled by the hosting platform. For a launch check, use two confirmed adult test accounts to verify reciprocal matching, a real test transfer with administrator approval, member-only sending, blocking, and expiry behaviour. Manual payment confirmation is an operational step, not an automated payment integration.

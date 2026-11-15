@@ -1,43 +1,176 @@
+"use client";
 import Link from "next/link";
-import Image from "next/image";
-import { APP_NAME } from "@/lib/constants";
-
-export function SiteHeader() {
+import { usePathname } from "next/navigation";
+import {
+  Heart,
+  Compass,
+  MessageCircle,
+  UserRound,
+  Menu,
+  X,
+  ArrowUpRight,
+  Sparkles,
+} from "lucide-react";
+import { useState } from "react";
+import { useCommunity } from "@/components/community/provider";
+export function Brand() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="/brand/nightlink-logo.png"
-            alt="NightLink logo"
-            width={36}
-            height={36}
-            className="h-9 w-9 rounded-xl"
-          />
-          <span className="text-xl font-semibold tracking-tight text-white">{APP_NAME}</span>
-        </Link>
-
-        <nav className="hidden items-center gap-6 text-sm text-slate-300 md:flex">
-          <Link href="/discover" className="transition hover:text-white">
-            Discover
-          </Link>
-          <Link href="/matches" className="transition hover:text-white">
-            Matches
-          </Link>
-          <Link href="/billing" className="transition hover:text-white">
-            Premium
-          </Link>
-          <Link href="/settings" className="transition hover:text-white">
-            Settings
-          </Link>
-          <Link
-            href="/signup"
-            className="rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 px-4 py-2 font-medium text-white shadow-lg shadow-violet-900/30 transition hover:opacity-95"
-          >
-            Join now
-          </Link>
-        </nav>
+    <Link href="/" className="brand" aria-label="Akoma home">
+      <span className="brand-icon">
+        <Heart size={23} strokeWidth={1.9} />
+      </span>
+      akoma<span className="brand-dot">.</span>
+    </Link>
+  );
+}
+export function SiteHeader() {
+  const pathname = usePathname();
+  const { user, me } = useCommunity();
+  const [open, setOpen] = useState(false);
+  const links = user
+    ? [
+        ["/discover", "Discover"],
+        ["/matches", "Matches & chats"],
+        ["/billing", "Akoma Plus"],
+        ["/safety", "Stay safe"],
+      ]
+    : [
+        ["/discover", "Discover"],
+        ["/#how-it-works", "How it works"],
+        ["/safety", "Our promise"],
+        ["/billing", "Akoma Plus"],
+      ];
+  return (
+    <>
+      <div className="announcement">
+        A little Ghanaian heart. A whole lot of possibility.{" "}
+        <span>Exclusively 18+</span>
       </div>
-    </header>
+      <header className="site-header">
+        <div className="header-inner">
+          <Brand />
+          <nav className="desktop-nav" aria-label="Main navigation">
+            {links.map(([href, label]) => (
+              <Link
+                key={href}
+                className={pathname === href ? "active" : ""}
+                href={href}
+              >
+                {label}
+              </Link>
+            ))}
+            {me?.user.admin && <Link href="/admin">Admin</Link>}
+          </nav>
+          <div className="header-actions">
+            {user ? (
+              <Link className="account-link" href="/settings">
+                <UserRound size={18} />
+                <span>{me?.profile?.name || "My profile"}</span>
+              </Link>
+            ) : (
+              <>
+                <Link className="login-link" href="/login">
+                  Log in
+                </Link>
+                <Link className="button primary small-button" href="/signup">
+                  Find your person <ArrowUpRight size={16} />
+                </Link>
+              </>
+            )}
+            <button
+              className="menu-button icon-button"
+              aria-label={open ? "Close navigation" : "Open navigation"}
+              aria-expanded={open}
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+        {open && (
+          <nav className="mobile-menu" aria-label="Mobile navigation">
+            {links.map(([href, label]) => (
+              <Link key={href} href={href} onClick={() => setOpen(false)}>
+                {label}
+              </Link>
+            ))}
+            {me?.user.admin && (
+              <Link href="/admin" onClick={() => setOpen(false)}>
+                Admin
+              </Link>
+            )}
+            {user ? (
+              <Link href="/settings" onClick={() => setOpen(false)}>
+                My profile
+              </Link>
+            ) : (
+              <Link href="/login" onClick={() => setOpen(false)}>
+                Log in
+              </Link>
+            )}
+          </nav>
+        )}
+      </header>
+      {user && (
+        <nav className="bottom-nav" aria-label="Member navigation">
+          {[
+            ["/discover", "Discover", Compass],
+            ["/matches", "Chats", MessageCircle],
+            ["/billing", "Plus", Sparkles],
+            ["/settings", "Profile", UserRound],
+          ].map(([href, label, Icon]) => {
+            const I = Icon as typeof Heart;
+            return (
+              <Link
+                key={href as string}
+                className={pathname.startsWith(href as string) ? "active" : ""}
+                href={href as string}
+              >
+                <I size={21} />
+                <span>{label as string}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      )}
+    </>
+  );
+}
+export function SiteFooter() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-top">
+        <div>
+          <Brand />
+          <p>
+            Made for Ghana.
+            <br />
+            Open to something real.
+          </p>
+        </div>
+        <div className="footer-links">
+          <Link href="/safety">Safety & community</Link>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
+          <Link href="/billing">Membership</Link>
+        </div>
+        <div className="footer-note">
+          <span className="ghana-bars">
+            <i />
+            <i />
+            <i />
+          </span>
+          <p>
+            A connection closer to home.
+            <br />
+            <span>For adults 18 and over.</span>
+          </p>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>© {new Date().getFullYear()} Akoma. All hearts welcome.</span>
+        <span>Lead with kindness. Connect with intention.</span>
+      </div>
+    </footer>
   );
 }
